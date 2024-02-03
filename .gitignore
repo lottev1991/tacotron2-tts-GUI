@@ -157,3 +157,4 @@ share/
 Include/
 requirements_old.txt
 pyvenv.cfg
+waveglow
