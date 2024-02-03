@@ -1,4 +1,6 @@
-This is an updated version of [the original software]((https://github.com/lokkelvin2/). The most important update is that I made it work with a newer version of pytorch, which supports newer tacotron models. Before, there was an error regarding .zip archives; this should no longer occur. Some of the code was also taken from [this fork](https://github.com/648936-jason/tacotron2-tts-GUI).
+# tacotron2-tts-GUI (updated version)
+
+This is an updated version of [the original software](https://github.com/lokkelvin2/). The most important update is that I made it work with a newer version of pytorch, which supports newer tacotron models. Before, there was an error regarding .zip archives; this should no longer occur. Some of the code was also taken from [this fork](https://github.com/648936-jason/tacotron2-tts-GUI).
 I also adjusted it to the latest version of pygame and adjusted the way audio frequencies are read. This way, audio should be played back correctly by the mixer.
 
 Python 3.10 is recommended for this fork (I use 3.10.6 in my personal ``venv``). Please don't use 3.7 like the original repo says; this is outdated.
