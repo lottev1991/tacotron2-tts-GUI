@@ -1,4 +1,3 @@
-from pyexpat import model
 import sys
 from PyQt5 import Qt
 from PyQt5 import QtCore,QtGui
@@ -17,6 +16,10 @@ import numpy as np
 import os
 import pygame
 
+# Added
+from scipy.io.wavfile import write
+import itertools
+
 import sys
 sys.path.append(os.path.join(sys.path[0],'waveglow/'))
 
@@ -27,9 +30,13 @@ from hparams import create_hparams
 from model import Tacotron2
 from train import load_model
 from text import text_to_sequence, cleaners
-#from denoiser import Denoiser
+# from denoiser import Denoiser
 
-#from secrets import TOKEN # for debugging
+# from secrets import TOKEN # for debugging
+
+# Added
+counter=1
+info_list=[]
 
 _mutex1 = QMutex()
 _running1 = False # tab 0 synthesis QThread : Start/stop
@@ -167,7 +174,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         
         ### Init pygame mixer
         pygame.mixer.quit()
-        pygame.mixer.init(frequency=22050,size=-16, channels=1, allowedchanges=0)
+        pygame.mixer.init(frequency=22050,size=-16, channels=1)
         self.channel = pygame.mixer.Channel(0)
         
         ### Init qthreadpool
@@ -250,6 +257,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         _mutex1.lock()
         _running1 = False
         _mutex1.unlock()
+
         self.playback_wav(wav)
         self.TTSDialogButton.setEnabled(True)
         self.TTModelCombo.setEnabled(True)
@@ -269,6 +277,34 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         print(" > Time per step: {}".format(tps))
         self.update_status_bar("Ready")
         # TODO get pygame mixer callback on end or use sounddevice
+        
+        # Added section
+
+        extra_info = 'RT{:.4f}s_RTF{:.4f}s_TPS{:.4f}s'.format(elapsed,rtf,tps)
+
+        scaled = np.int16(wav/np.max(np.abs(wav)) * 32767)
+
+        # c = itertools.count()
+
+        global counter
+
+        actualname = "%s_%s_%d.%s" % ("result",extra_info,counter, "wav")
+
+        info_list.append(actualname)
+
+        audioname = "%s_%d.%s" % ("result",counter, "wav")
+
+        with open("info_list.txt", 'w') as output:
+            for row in info_list:
+                output.write(row + '\n')
+
+        # while os.path.exists(actualname):
+        #     actualname = "%s_%d.%s" % ("result", next(c),"wav")
+
+        write(audioname, 22050, scaled)
+        write('test.wav', 22050, wav)
+        
+        counter += 1
 
     @pyqtSlot(tuple)
     def on_itersignal(self,tup):
@@ -316,12 +352,11 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
             self.TTSStopButton.setEnabled(True)
         else:
             self.ClientSkipBtn.setEnabled(True)
-        # if wav.dtype != np.int16 :
-        #     # Convert from float32 or float16 to signed int16 for pygame
-        #     wav = (wav/np.amax(wav) * 32767).astype(np.int16)
         if wav.dtype != np.int16 :
             # Convert from float32 or float16 to signed int16 for pygame
-            wav = (wav/np.amax(wav) * 32767).astype(np.in16)
+            # wav = (wav/np.amax(wav) * 32767).astype(np.int16) # original
+            wav = np.int16(wav/np.max(np.abs(wav)) * 32767)
+        
         sound = pygame.mixer.Sound(wav)
         self.channel.queue(sound)
 
@@ -534,6 +569,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         # Setup hparams
         self.hparams = create_hparams()
         self.hparams.sampling_rate = 22050
+
         # Load Tacotron 2 from checkpoint
         self.model = load_model(self.hparams,self.use_cuda)
         device = torch.device('cuda' if self.use_cuda else 'cpu')
@@ -629,8 +665,8 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
     def get_token(self):
         TOKEN = ''.join(self.APIKeyLine.text().split())
         return TOKEN
-        #tokenobj = TOKEN() # for debugging
-        #return tokenobj.token # for debugging
+        # tokenobj = TOKEN() # for debugging
+        # return tokenobj.token # for debugging
 
     def get_current_TTmodel_dir(self):
         return self.TTmodel_dir[self.TTModelCombo.currentIndex()]

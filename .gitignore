@@ -150,3 +150,10 @@ srt2fcpxml.py
 secrets.py
 .vscode/
 target/
+
+Lib/
+Scripts/
+share/
+Include/
+requirements_old.txt
+pyvenv.cfg
