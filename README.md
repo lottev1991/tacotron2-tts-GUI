@@ -1,3 +1,29 @@
+This is an updated version of [the original software]((https://github.com/lokkelvin2/). The most important update is that I made it work with a newer version of pytorch, which supports newer tacotron models. Before, there was an error regarding .zip archives; this should no longer occur. Some of the code was also taken from [this fork](https://github.com/648936-jason/tacotron2-tts-GUI).
+I also adjusted it to the latest version of pygame and adjusted the way audio frequencies are read. This way, audio should be played back correctly by the mixer.
+
+Python 3.10 is recommended for this fork (I use 3.10.6 in my personal ``venv``). Please don't use 3.7 like the original repo says; this is outdated.
+
+The ``requirements.txt`` file is kind of overkill currently due to literally just being the output of ``pip freeze``. Will probably fix this later.
+
+### TODO:
+- Compile .exe (priority).
+- Add option to export .wav file (priority).
+- Add support for HiFi-GAN vocoder. Currently, tacotron models trained on HiFi-GAN have a slight reduction in quality due to the exclusive use of waveglow at the moment. Despite this, they are at least functional.
+- Add options to adjust speed, pitch, etc. (long-term).
+- Add some snazzy features such as model icons and config support (long-term).
+- Add support for translated strings (long-term).
+
+### Small FAQ
+#### Do TALQu models work?
+Yes, although some kanji aren't read correctly. I might try to fix this later, if possible. (But hey, at least you can type Latin characters and other alphabets).
+#### Do neuTalk models work?
+Technically yes, although you need to decompress the .ntk file first (and keep the note about HiFi-GAN above in mind).
+#### What languages are supported?
+Probably any, though I haven't tested them all.
+
+# Original README
+---
+
 ## Saves audio and inference information (update 18 May 2021)
 
 Run 'python gui_tester.py'
