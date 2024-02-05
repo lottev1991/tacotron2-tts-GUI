@@ -158,4 +158,3 @@ Include/
 requirements_old.txt
 pyvenv.cfg
 waveglow
-output/output.wav
