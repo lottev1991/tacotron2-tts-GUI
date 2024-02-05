@@ -8,6 +8,12 @@ from nvidia_tacotron_TTS_Layout import Ui_MainWindow
 from ui import Ui_extras
 from timerthread import timerThread
 from preprocess import preprocess_text
+from pydub import AudioSegment
+from pathlib import Path
+
+import soundfile as sf
+
+import IPython.display as ipd
 
 import time
 import requests
@@ -28,6 +34,8 @@ from model import Tacotron2
 from train import load_model
 from text import text_to_sequence, cleaners
 #from denoiser import Denoiser
+
+from waveglow.mel2samp import MAX_WAV_VALUE
 
 #from secrets import TOKEN # for debugging
 
@@ -252,6 +260,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         _mutex1.unlock()
         self.playback_wav(wav)
         self.TTSDialogButton.setEnabled(True)
+        self.TTSExportWavButton.setEnabled(True)
         self.TTModelCombo.setEnabled(True)
         self.WGModelCombo.setEnabled(True)
         self.TTSTextEdit.setEnabled(True)
@@ -280,6 +289,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
     def on_interrupt(self):
         # Reenable buttons
         self.TTSDialogButton.setEnabled(True)
+        self.TTSExportWavButton.setEnabled(True)
         self.TTModelCombo.setEnabled(True)
         self.WGModelCombo.setEnabled(True)
         self.TTSTextEdit.setEnabled(True)
@@ -316,9 +326,6 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
             self.TTSStopButton.setEnabled(True)
         else:
             self.ClientSkipBtn.setEnabled(True)
-        # if wav.dtype != np.int16 :
-        #     # Convert from float32 or float16 to signed int16 for pygame
-        #     wav = (wav/np.amax(wav) * 32767).astype(np.int16)
         if wav.dtype != np.int16 :
             # Convert from float32 or float16 to signed int16 for pygame
             wav = (wav/np.amax(wav) * 32767).astype(np.in16)
@@ -479,7 +486,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
                                         break
                                     fn_callback.emit(('GUI: progress bar 2 text', (count+1,len(lines))))
                                     wav = audio[0].data.cpu().numpy()
-                                output.append(wav)
+                            output.append(wav)
                             _mutex3.lock()
                             if _running3 == True:
                                 _mutex3.unlock()
@@ -511,6 +518,12 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         sound = pygame.mixer.Sound(wav)
         self.channel.queue(sound)
         # TODO Disable skip btn on playback end
+
+    def export_wav(self):
+        audio_path = str(QFileDialog.getSaveFileName(self, 'Export .wav', filter='*.wav')[0])
+        data, samplerate = sf.read('./output/output.wav')
+        sf.write(audio_path, data, samplerate)
+        self.update_status_bar(".wav file successfully exported.")
 
     def skip_wav(self):
         if self.channel.get_busy():
@@ -560,6 +573,7 @@ class GUI(QMainWindow, Ui_MainWindow, Ui_extras):
         if text.isspace():return
         global _running1
         self.t_1 = time.time()
+        self.TTSExportWavButton.setDisabled(True)
         self.TTSDialogButton.setDisabled(True)
         self.TTModelCombo.setDisabled(True)
         self.WGModelCombo.setDisabled(True)
@@ -733,6 +747,8 @@ class inferThread(QThread):
         self.use_cuda = use_cuda
         self.model = model
         self.waveglow = waveglow
+        self.hparams = create_hparams()
+        self.hparams.sampling_rate = 22050
         self.progress = progress
         self.elapsed = elapsed
         self.num_thread = num_thread
@@ -776,7 +792,13 @@ class inferThread(QThread):
                     return
                 self.iterSignal.emit((count+1,len(lines)))
                 wav = audio[0].data.cpu().numpy()
+                audio = audio * MAX_WAV_VALUE
             output.append(wav)
+            audio_path = './output/output.wav'
+            audio = ipd.Audio(audio[0].data.cpu().numpy(), rate=self.hparams.sampling_rate)
+            audio = AudioSegment(audio.data, frame_rate=22050, sample_width=2, channels=1)
+            audio.export(audio_path, format="wav", bitrate="64k") 
+            print(audio_path)
         outwav = np.concatenate(output)
         self.audioSignal.emit(outwav)
 

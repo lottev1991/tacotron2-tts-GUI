@@ -13,6 +13,7 @@ class Ui_extras(object):
         MainWindow.GpuSwitch.setToolTip("<h4>CUDA installed: {}</h4>".format(torch.cuda.is_available()))
 
     def initWidgets(self, MainWindow):
+        MainWindow.TTSExportWavButton.setDisabled(True)
         MainWindow.TTSStopButton.setDisabled(True)
         MainWindow.progressBar2Label.setText('')
         MainWindow.progressBarLabel.setText('')
@@ -34,6 +35,7 @@ class Ui_extras(object):
         # Static widget signals
         MainWindow.TTModelCombo.currentIndexChanged.connect(MainWindow.set_reload_model_flag)
         MainWindow.WGModelCombo.currentIndexChanged.connect(MainWindow.set_reload_model_flag)
+        MainWindow.TTSExportWavButton.clicked.connect(MainWindow.export_wav)
         MainWindow.TTSDialogButton.clicked.connect(MainWindow.start_synthesis)
         MainWindow.TTSStopButton.clicked.connect(MainWindow.skip_infer_playback)
         MainWindow.LoadTTButton.clicked.connect(MainWindow.add_TTmodel_path)
