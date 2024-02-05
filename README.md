@@ -9,12 +9,12 @@ Python 3.10 is recommended for this fork (I use 3.10.6 in my personal ``venv``).
 The ``requirements.txt`` file is kind of overkill currently due to literally just being the output of ``pip freeze``. Will probably fix this later.
 
 ### TODO:
-- Compile .exe (priority).
-- Add option to export .wav file (priority).
-- Add support for HiFi-GAN vocoder. Currently, tacotron models trained on HiFi-GAN have a slight reduction in quality due to the exclusive use of waveglow at the moment. Despite this, they are at least functional.
-- Add options to adjust speed, pitch, etc. (long-term).
-- Add some snazzy features such as model icons and config support (long-term).
-- Add support for translated strings (long-term).
+- [x] Compile .exe
+- [x] Add option to export .wav file
+- [] Add support for HiFi-GAN vocoder. Currently, tacotron models trained on HiFi-GAN have a slight reduction in quality due to the exclusive use of waveglow at the moment. Despite this, they are at least functional.
+- [] Add options to adjust speed, pitch, etc. (long-term).
+- [] Add some snazzy features such as model icons and config support (long-term).
+- [] Add support for translated strings (long-term).
 
 ### Small FAQ
 #### Do TALQu models work?
