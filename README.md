@@ -11,10 +11,10 @@ The ``requirements.txt`` file is kind of overkill currently due to literally jus
 ### TODO:
 - [x] Compile .exe
 - [x] Add option to export .wav file
-- [] Add support for HiFi-GAN vocoder. Currently, tacotron models trained on HiFi-GAN have a slight reduction in quality due to the exclusive use of waveglow at the moment. Despite this, they are at least functional.
-- [] Add options to adjust speed, pitch, etc. (long-term).
-- [] Add some snazzy features such as model icons and config support (long-term).
-- [] Add support for translated strings (long-term).
+- [ ] Add support for HiFi-GAN vocoder. Currently, tacotron models trained on HiFi-GAN have a slight reduction in quality due to the exclusive use of waveglow at the moment. Despite this, they are at least functional.
+- [ ] Add options to adjust speed, pitch, etc. (long-term).
+- [ ] Add some snazzy features such as model icons and config support (long-term).
+- [ ] Add support for translated strings (long-term).
 
 ### Small FAQ
 #### Do TALQu models work?
