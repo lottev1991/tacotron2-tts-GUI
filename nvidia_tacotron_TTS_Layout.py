@@ -269,7 +269,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.tabWidget.setCurrentIndex(0)
-        self.setWindowTitle("Tacotron2 + Waveglow GUI v0.3")
+        self.setWindowTitle("Tacotron2 + Waveglow GUI v0.3.1")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
