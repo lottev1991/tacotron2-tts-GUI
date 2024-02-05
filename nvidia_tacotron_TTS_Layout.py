@@ -304,4 +304,4 @@ class Ui_MainWindow(object):
         self.OptBlockNumberBtn.setText(_translate("MainWindow", "Block large numbers (>8 digits)"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_3), _translate("MainWindow", "Options"))
         self.statusbar.setText(_translate("MainWindow", "Ready"))
-        self.label_6.setText(_translate("MainWindow", "v0.3"))
+        self.label_6.setText(_translate("MainWindow", "v0.3.1"))
