@@ -31,7 +31,7 @@ import torch.nn.functional as F
 from tqdm import tqdm
 import time
 
-@torch.jit.script
+@torch.jit._script_if_tracing
 def fused_add_tanh_sigmoid_multiply(input_a, input_b, n_channels):
     n_channels_int = n_channels[0]
     in_act = input_a+input_b
